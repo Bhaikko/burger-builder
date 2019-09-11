@@ -7,7 +7,7 @@ import classes from './Layout.css';
 const Layout = (props) => (
     //Aux Is used as HOC to wrap adjacent elements
     <Aux>
-        <div>Toolbar, SideDrawer, Backdrop</div>
+        {/* <div>Toolbar, SideDrawer, Backdrop</div> */}
         <main className={classes.content}>
             {props.children}
         </main>
