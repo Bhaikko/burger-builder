@@ -9,7 +9,7 @@ class modal extends Component {
 
     //Optimisation to update modal only if show is updated in BurgerBuilder and due to this, its children also will not update, in this case, Order Summary will also not update
     shouldComponentUpdate (nextProps, nextState) {
-        return nextProps.show !== this.props.show
+        return nextProps.show !== this.props.show || nextProps.children !== this.props.children;    //Because of the spinner to update, children check should be done
     }
 
     // componentDidUpdate() {
