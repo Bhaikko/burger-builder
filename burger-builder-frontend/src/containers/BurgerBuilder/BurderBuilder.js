@@ -101,33 +101,13 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-
-        // this.setState({ loading: true });
-        // // alert("Ordered");
-        // const order = {
-        //     ingredients: this.state.ingredients,
-        //     price: this.state.price,         //This PRICE SHOULD BE RECALCULATED ON SERVER
-        //     customer: {
-        //         name: "Max",
-        //         address: {
-        //             street: "Test",
-        //             zipCode: "123",
-        //             country: "India"
-        //         },
-        //         email: "test@gmail.com",   
-        //     },
-        //     deliveryMethod: "fastest"
-        // };
-
-        // axios.post("/orders.json", order)  //only for firebase .json is added
-        //     .then(response => this.setState({ loading: false, purchasing: false }))
-        //     .catch(error => this.setState({ loading: false, purchasing: false }));
         const queryParams = [];
 
         // eslint-disable-next-line
         for(let i in this.state.ingredients) {
             queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i])); //encodeURIComponent() converts data into url parsable data which might contain whitespaces
         }
+        queryParams.push("price=" + this.state.totalPrice);
         const queryString = queryParams.join("&");  //indiviual queries are seperated with & not " " you idiot
 
         this.props.history.push({
