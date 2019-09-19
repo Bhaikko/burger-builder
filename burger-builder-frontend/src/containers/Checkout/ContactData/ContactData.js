@@ -32,7 +32,7 @@ class ContactData extends Component {
                 elementType: "input",
                 elementConfig: {
                     type: "text",
-                    placeholder: "Your Street",
+                    placeholder: "Street",
                 },
                 value: "",
                 validation: {
@@ -45,13 +45,14 @@ class ContactData extends Component {
                 elementType: "input",
                 elementConfig: {
                     type: "text",
-                    placeholder: "Your Zipcode",
+                    placeholder: "Zipcode",
                 },
                 value: "",
                 validation: {
                     required: true,
                     minLength: 5,
-                    maxLength: 5
+                    maxLength: 5,
+                    isNumeric: true
                 },
                 valid: false,
                 touched: false
@@ -60,7 +61,7 @@ class ContactData extends Component {
                 elementType: "input",
                 elementConfig: {
                     type: "text",
-                    placeholder: "Your Country",
+                    placeholder: "Country",
                 },
                 value: "",
                 validation: {
@@ -73,11 +74,12 @@ class ContactData extends Component {
                 elementType: "input",
                 elementConfig: {
                     type: "email",
-                    placeholder: "Your Mail",
+                    placeholder: "Mail",
                 },
                 value: "",
                 validation: {
-                    required: true
+                    required: true,
+                    isEmail: true 
                 },
                 valid: false,
                 touched: false
@@ -111,11 +113,21 @@ class ContactData extends Component {
             isValid = value.trim() !== "";  //trim() is used to remove whitespaces
         }
         if(rules.minLength) {
-            isValid = value.length >= rules.minLength;
+            isValid = value.length >= rules.minLength && isValid;
         }
         if(rules.mxnLength) {
-            isValid = value.length <= rules.minLength;
+            isValid = value.length <= rules.minLength && isValid;
         }
+        if (rules.isEmail) {
+            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            isValid = pattern.test(value) && isValid
+        }
+
+        if (rules.isNumeric) {
+            const pattern = /^\d+$/;
+            isValid = pattern.test(value) && isValid
+        }
+
 
         return isValid;
     }
