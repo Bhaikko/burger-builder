@@ -69,6 +69,7 @@ const withErrorHandler = (WrappedComponent, axios) => { //Axios to use the globa
                     </Modal>
                     
                     <WrappedComponent {...this.props} />
+                    {/* this.props is important when a component is wrapped by multiple higher order components */}
                 </Aux>
             );
         }
