@@ -107,15 +107,15 @@ class ContactData extends Component {
         if(!rules)
             return true;
 
-        let isValid = false;
+        let isValid = true;
 
         if(rules.required) {
-            isValid = value.trim() !== "";  //trim() is used to remove whitespaces
+            isValid = value.trim() !== "" && isValid;  //trim() is used to remove whitespaces
         }
         if(rules.minLength) {
             isValid = value.length >= rules.minLength && isValid;
         }
-        if(rules.mxnLength) {
+        if(rules.maxLength) {
             isValid = value.length <= rules.minLength && isValid;
         }
         if (rules.isEmail) {
@@ -150,12 +150,13 @@ class ContactData extends Component {
             orderData: formData
         };
 
-        axios.post("/orders.json", order)  //only for firebase .json is added
-            .then(response => {
-                this.setState({ loading: false});
-                this.props.history.push("/");
-            })
-            .catch(error => this.setState({ loading: false }));
+        // This is outsourced to redux action creator
+        // axios.post("/orders.json", order)  //only for firebase .json is added
+        //     .then(response => {
+        //         this.setState({ loading: false});
+        //         this.props.history.push("/");
+        //     })
+        //     .catch(error => this.setState({ loading: false }));
     }
 
     // To change value of input on page, value should be updated using setState()
