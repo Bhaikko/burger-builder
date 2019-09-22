@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import CheckoutSummary from './../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
+import * as actions from './../../store/actions/index';
 
 class Checkout extends Component {
 
@@ -36,6 +37,10 @@ class Checkout extends Component {
     //     this.setState({ingredients: ingredients, totalPrice: price});
     // }
 
+    // componentDidMount () {
+    //     this.props.onInitPurchase();
+    // }
+
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
     }
@@ -46,29 +51,43 @@ class Checkout extends Component {
     }
 
     render () {
-        return (
-            <div>
-                <CheckoutSummary 
-                    ingredients={this.props.ings}
-                    checkoutCancelled={this.checkoutCancelledHandler}
-                    checkoutContinued={this.checkoutContinuedHandler} />
+        let summary = <Redirect to="/" />
+        if(this.props.ings) {
+            const purchasedRediect = this.props.purchased ? <Redirect to="/" /> : null;
+            summary = (
+                <div>
+                    { purchasedRediect }
+                    <CheckoutSummary 
+                        ingredients={this.props.ings}
+                        checkoutCancelled={this.checkoutCancelledHandler}
+                        checkoutContinued={this.checkoutContinuedHandler} />
 
-                <Route 
-                    path={this.props.match.path + '/contact-data'} 
-                    component={ContactData} />  
-                    {/* using render allows to pass props */}
-            </div>
-        ); 
+                    <Route 
+                        path={this.props.match.path + '/contact-data'} 
+                        component={ContactData} />  
+                        {/* using render allows to pass props */}
+                </div>
+            );
+        }
+        return summary;
     }
 }
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients
+        ings: state.burgerBuilder.ingredients,
+        purchased: state.order.purchased
+    }
+}
+
+// However, using onInitpurchase() causes the props to be persistent, Hence it is used in burgerBuilder
+const mapDispatchToProps = dispatch => {
+    return {
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     }
 }
 
 // No need for dispatchmethods since this component doesnt make changes to global state
 
 
-export default connect(mapStateToProps)(Checkout);
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

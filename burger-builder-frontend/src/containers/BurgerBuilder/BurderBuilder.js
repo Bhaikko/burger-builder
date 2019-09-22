@@ -11,7 +11,7 @@ import Spinner from './../../components/UI/Spinner/Spinner'
 import withErrorHandler from './../../hoc/withErrorHandler/withErrorHandler';
 import * as actionTypes from '../../store/actions/actionTypes';
 import axios from "./../../axios-orders";
-import * as burgerBuilderActions from './../../store/actions/index';
+import * as actions from './../../store/actions/index';
 
 class BurgerBuilder extends Component {
     constructor (props) {
@@ -19,19 +19,18 @@ class BurgerBuilder extends Component {
 
         this.state = {
             purchasing: false,
-            loading: false ,
-
         }
     }
 
     // Ingredients are now mananaged in redux global state
-    // componentDidMount () {
-    //     axios.get("https://burger-builder-96418.firebaseio.com/ingredients.json")
-    //         .then(response => {
-    //             this.setState({ ingredients: response.data });
-    //         })
-    //         .catch(err => {});
-    // }
+    componentDidMount () {
+        // axios.get("https://burger-builder-96418.firebaseio.com/ingredients.json")
+        //     .then(response => {
+        //         this.setState({ ingredients: response.data });
+        //     })
+        //     .catch(err => {});
+        this.props.onInitIngredients();
+    }
 
     purchaseHandler = () => {
         this.setState({ purchasing: true });
@@ -113,7 +112,7 @@ class BurgerBuilder extends Component {
         //     pathname: "/checkout",
         //     search: "?" + queryString
         // });
-
+        this.props.onInitPurchase();
         this.props.history.push("/checkout");
     }
 
@@ -129,8 +128,8 @@ class BurgerBuilder extends Component {
 
         let orderSummary = null;
 
-        if(this.state.loading)
-            orderSummary = <Spinner />
+        // if(this.state.loading)
+        //     orderSummary = <Spinner />
 
         let burger = <Spinner />
 
@@ -174,8 +173,9 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice 
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error  
     };
 }
 
@@ -186,9 +186,10 @@ const mapDispatchToProps = (dispatch) => {
         // onIngredientRemoved: (name) => dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientName: name}),
         
         // dispatch actions using action creators
-        onIngredientAdded: (name) => dispatch(burgerBuilderActions.addIngredient(name)),
-        onIngredientRemoved: (name) => dispatch(burgerBuilderActions.removeIngredient(name)),
-
+        onIngredientAdded: (name) => dispatch(actions.addIngredient(name)),
+        onIngredientRemoved: (name) => dispatch(actions.removeIngredient(name)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     }
 }
 
