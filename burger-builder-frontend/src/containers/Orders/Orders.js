@@ -53,26 +53,28 @@ class Orders extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onFetchOrders: () => dispatch(actions.fetchOrders())
-    }
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         onFetchOrders: () => dispatch(actions.fetchOrders())
+//     }
+// }
 
-const mapStateToProps = (state) => {
-    return {
-        orders: state.order.orders,
-        loading: state.order.loading
-    }
-}
+// const mapStateToProps = (state) => {
+//     return {
+//         orders: state.order.orders,
+//         loading: state.order.loading
+//     }
+// }
 
-// const mapStateToProps = (state) => ({
-//     orders: state.order.orders,
-//     loading: state.order.loading 
-// });
 
-// const mapDispatchToProps = (dispatch) => ({
-//     onFetchOrders: () => dispatch(actions.fetchOrders())
-// });
+// Arrow inline function used to return object 
+const mapStateToProps = (state) => ({
+    orders: state.order.orders,
+    loading: state.order.loading 
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    onFetchOrders: () => dispatch(actions.fetchOrders())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));
