@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Layout from './hoc/Layout/Layout';
@@ -16,19 +16,43 @@ class App extends Component {
   }
   
   render() {
+    // if the router is not render, it is not accessible or routable
+
+    // this is done to seperate routes for authenticated and unauthenticated users
+    let routes = (
+      <Switch>
+        <Route path="/" exact component={BurgerBuilder} />
+        <Route path="/auth" component={Auth} />
+        <Redirect to="/" />
+      </Switch>
+    );
+
+    // Redirect can also be used as default case for <Switch /> and can be used as Guards
+    if(this.props.isAuthenticated) {
+      routes = (
+        <Switch>
+          <Route path="/" exact component={BurgerBuilder} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/orders" component={Orders} />
+          <Route path="/logout" component={Logout} />
+          <Redirect to="/" />
+        </Switch>
+      )
+    }
+
     return (
       <div>
         <Layout>
-          <Switch>
-            <Route path="/" exact component={BurgerBuilder} />
-            <Route path="/checkout" component={Checkout} />
-            <Route path="/orders" component={Orders} />
-            <Route path="/auth" component={Auth} />
-            <Route path="/logout" component={Logout} />
-          </Switch>
+          {routes}
         </Layout>
       </div>
     );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.token !== null 
   }
 }
 
@@ -38,4 +62,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
