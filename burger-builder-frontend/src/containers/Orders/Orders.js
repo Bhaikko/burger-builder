@@ -12,7 +12,7 @@ class Orders extends Component {
 
     // Fetching orders is handled in redux asynchronously
     componentDidMount () {
-        this.props.onFetchOrders();
+        this.props.onFetchOrders(this.props.token);
 
         // axios.get("/orders.json")
         //     .then(response => {
@@ -70,11 +70,12 @@ class Orders extends Component {
 // Arrow inline function used to return object 
 const mapStateToProps = (state) => ({
     orders: state.order.orders,
-    loading: state.order.loading 
+    loading: state.order.loading,
+    token: state.auth.token 
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onFetchOrders: () => dispatch(actions.fetchOrders())
+    onFetchOrders: (token) => dispatch(actions.fetchOrders(token))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));

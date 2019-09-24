@@ -25,6 +25,7 @@ const authFail = (error) => {
 };
 
 // function calls are dispatched not their reference
+// we dont return any action inside async dispatch methods rather call dispatch to execute sync action creators
 export const auth = (email, password, isSignUp) => {
     return (dispatch) => {
         dispatch(authStart());
@@ -40,7 +41,64 @@ export const auth = (email, password, isSignUp) => {
         }
 
         axios.post(url, authData)
-            .then(response => dispatch(authSuccess(response.data.idToken, response.data.localId)))
-            .catch(error => dispatch(authFail(error)))
+            .then(response => {
+                // localstorage is browser API for storing data
+                localStorage.setItem('token', response.data.idToken);
+                localStorage.setItem('userId', response.data.localId);
+
+                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000); // To store expire time and date 
+                localStorage.setItem('expirationDate', expirationDate);
+
+                dispatch(authSuccess(response.data.idToken, response.data.localId));
+                dispatch(authLogout(response.data.expiresIn));
+            })
+            .catch(error => dispatch(authFail(error.response.data.error)))
+    }
+}
+
+export const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationDate");
+    localStorage.removeItem("userId");
+    return {
+        type: actionTypes.AUTH_LOGOUT
+    };
+};
+
+// this is logout function for when the token expires on server, clear the tokenId and UserId on frontend too
+export const authLogout = (expirationTime) => {
+    return (dispatch) => {
+        setTimeout(() => {
+            dispatch(logout());
+        }, expirationTime * 1000);
+    }
+}
+
+export const setAuthRedirectPath = (path) => {
+    return {
+        type: actionTypes.SET_AUTH_REDIRECT_PATH,
+        path: path
+    }
+}
+
+export const authCheckState = () => {
+    // thunk can also be used to dispatch multiple reducers from single action
+    return (dispatch) => {
+        const token = localStorage.getItem("token");
+        if(!token) {
+            dispatch(logout());
+        }
+        else {
+            const expirationDate = new Date(localStorage.getItem("expirationDate"));    // can convert string to date format
+            if(expirationDate > new Date()) {
+                const userId = localStorage.getItem("userId");
+                dispatch(authSuccess(token, userId));
+                dispatch(authLogout((expirationDate.getTime() - new Date().getTime()) / 1000));
+            }
+            else {
+                dispatch(authSuccess())
+            }
+            
+        }
     }
 }
