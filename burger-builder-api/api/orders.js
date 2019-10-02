@@ -10,7 +10,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/getOrders", (req, res, next) => {
     databaseHandler.getOrders()
-        .then(orders => res.send(orders));
+        .then(orders => res.send(orders))
 });
 
 router.post("/addOrder", (req, res, next) => {
@@ -18,7 +18,6 @@ router.post("/addOrder", (req, res, next) => {
     databaseHandler.addOrder(userId, ingredientsObject, price, date)
         .then(() => res.send("Order Added"))
         .catch(err => console.log(err));
-    
 });
 
 

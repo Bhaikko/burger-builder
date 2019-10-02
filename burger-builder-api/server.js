@@ -1,12 +1,25 @@
 const express = require("express");
+const session = require("express-session");
 
 const { database } = require("./database/database");
 const router = require("./api/index").router;
+const { passport } = require("./passport");
+const { COOKIE_SECRET_KEY } = require("./credentials");
 
 const app = express();
 
 app.use(express.json());
-app.unsubscribe(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+
+const sessionMiddleware = session({
+    secret: COOKIE_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+});
+
+app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api", router);
 
