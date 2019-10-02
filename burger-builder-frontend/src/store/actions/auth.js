@@ -32,27 +32,32 @@ export const auth = (email, password, isSignUp) => {
         const authData = {
             email: email,
             password: password,
-            returnSecureToken: true 
+            // returnSecureToken: true 
         }
 
-        let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC7VVKakL2LIjVFkUMOUmMAD3c7i9I2Ut0";
+        // let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC7VVKakL2LIjVFkUMOUmMAD3c7i9I2Ut0";
+        let url = "http://127.0.0.1:4000/api/auth/signup";
         if(!isSignUp) {
-            url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC7VVKakL2LIjVFkUMOUmMAD3c7i9I2Ut0";
+            // url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC7VVKakL2LIjVFkUMOUmMAD3c7i9I2Ut0";
+            url = "http://127.0.0.1:4000/api/auth/login"
         }
 
         axios.post(url, authData)
             .then(response => {
-                // localstorage is browser API for storing data
-                localStorage.setItem('token', response.data.idToken);
-                localStorage.setItem('userId', response.data.localId);
+                console.log(response);
 
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000); // To store expire time and date 
+                // localstorage is browser API for storing data
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userId', response.data.user.userId);
+
+                const expirationDate = new Date(new Date().getTime() + response.data.user.expirationTime); // To store expire time and date 
                 localStorage.setItem('expirationDate', expirationDate);
 
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(authLogout(response.data.expiresIn));
+                dispatch(authSuccess(response.data.token, response.data.user.userId));
+                dispatch(authLogout(expirationDate));
             })
-            .catch(error => dispatch(authFail(error.response.data.error)))
+            // .catch(error => dispatch(authFail(error.response.data.error)))
+            .catch(err => dispatch(authFail(err)));
     }
 }
 

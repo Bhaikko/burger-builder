@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const databaseHandler = require("./../database/index");
-const { passport } = require("./../passport");
+const passport = require("./../passport").passport;
 const { TOKEN_SECRET_KEY } = require("./../credentials");
 
 const router = express.Router();
@@ -21,8 +21,9 @@ router.post("/signup", (req, res, next) =>{
 });
 
 
-router.post("/login", {session: false}, (req, res, next) => {
-    passport.authenticate("user", (err, user, info) => {
+router.post("/login", (req, res, next) => {
+
+    passport.authenticate("user", {session: false}, (err, user, info) => {
         if(err || !user)
         {
             return res.status(400).json({
@@ -36,13 +37,21 @@ router.post("/login", {session: false}, (req, res, next) => {
                 res.send(err);
             }
 
-            const token = jwt.sign(user, TOKEN_SECRET_KEY, { expiresIn: '1h' });
+            const expirationTime = Math.floor(Date.now() / 1000) + (60 * 60);
+
+            const token = jwt.sign({ 
+                data: user,
+                exp: expirationTime
+            }, TOKEN_SECRET_KEY);
             return res.json({
-                user, 
+                user: {
+                    userId: user.id,
+                    expirationTime: expirationTime
+                },
                 token
             });
         });
-    });
+    })(req, res, next);
 });
 
 // This is responsible for protected requests, and act as middleware

@@ -18,23 +18,26 @@ passport.use("user", new LocalStrategy({ usernameField: "email", passwordField: 
         .then(user => {
             if(!user)
                 return done(null, false, { message: "Incorrect Password or Username" });
-            else if(!bcrypt.compare(password, user.passport, (err, res) => res))
+
+            return bcrypt.compare(password, user.password, function(err, res){
+                if(res)
+                    return done(null, user);
+
                 return done(null, false, { message: "Incorrect Password or Username" });
-            else 
-                return done(null, user);
+            });
         })
         .catch(err => console.log(err));
 }));
 
 
-passport.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: TOKEN_SECRET_KEY
-}, (jwtPayload, done) => {
-        return Users.findOneById(jwtPayload.id)
-            .then(user => done(null, user))
-            .catch(err => done(err));
-}));
+// passport.use("jwt", new JWTStrategy({
+//     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+//     secretOrKey: TOKEN_SECRET_KEY
+// }, (jwtPayload, done) => {
+//         return Users.findOneById(jwtPayload.id)
+//             .then(user => done(null, user))
+//             .catch(err => done(err));
+// }));
 
 
 // passport.serializeUser((user, done) => done(null, user.id));

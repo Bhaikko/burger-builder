@@ -2,17 +2,19 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
     ingredients: null,
-    totalPrice: 4,
+    prices: null,
+    totalPrice: null,
     error: false,
     building: false
 }
 
-const INGREDIENT_PRICES = {
-    salad: 0.5,
-    cheese: 0.4,
-    meat: 1.3,
-    bacon: 0.7
-}
+
+// const state.prices = {
+//     salad: 0.5,
+//     cheese: 0.4,
+//     meat: 1.3,
+//     bacon: 0.7
+// }
 
 const reducer = (state = initialState, action) => {
 
@@ -27,7 +29,7 @@ const reducer = (state = initialState, action) => {
                    ...state.ingredients,
                    [action.ingredientName]: state.ingredients[action.ingredientName] + 1,
                },
-               totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+               totalPrice: state.totalPrice + state.prices[action.ingredientName],
                building: true 
             };
 
@@ -38,7 +40,7 @@ const reducer = (state = initialState, action) => {
                     ...state.ingredients,
                     [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
                 },
-                totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+                totalPrice: state.totalPrice - state.prices[action.ingredientName],
                 building: true
             };
 
@@ -47,14 +49,17 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 // Reordering ingredients
                 ingredients: {
-                    salad: action.ingredients.salad,
-                    bacon: action.ingredients.bacon,
-                    cheese: action.ingredients.cheese,
-                    meat: action.ingredients.meat
+                    salad: action.data.ingredients.salad,
+                    bacon: action.data.ingredients.bacon,
+                    cheese: action.data.ingredients.cheese,
+                    meat: action.data.ingredients.meat
                 },
-                totalPrice: 4,
+                totalPrice: action.data.totalPrice,
                 error: false,
-                building: false
+                building: false,
+                prices: {
+                    ...action.data.prices
+                }
             }
 
         case actionTypes.FETCH_INGREDIENTS_FAILED: 

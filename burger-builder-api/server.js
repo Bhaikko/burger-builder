@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const cors = require("cors");
 
 const { database } = require("./database/database");
 const router = require("./api/index").router;
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 const sessionMiddleware = session({
     secret: COOKIE_SECRET_KEY,
