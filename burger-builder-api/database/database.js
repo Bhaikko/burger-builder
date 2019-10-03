@@ -23,10 +23,10 @@ const Users = database.define("users", {
     password: {
         type: Sequelize.STRING,
         allowNull: false,
-        len: {
-            args: [8, 32],
-            msg: "Password must have 8 charaters."
-        }
+        // len: {
+        //     args: [8, 32],
+        //     msg: "Password must have 8 charaters."
+        // }
     }
 });
 

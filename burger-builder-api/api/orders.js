@@ -1,7 +1,9 @@
 const express = require("express");
 
+
 const databaseHandler = require("./../database/index");
-const passport = require("./../passport").passport;
+const { MAILGUN_API_KEY, DOMAIN } = require("./../credentials");
+const mailgun = require("mailgun-js")({ apiKey: MAILGUN_API_KEY, domain: DOMAIN }); // This uses authorized recipients method of mailgun
 
 const router = express.Router();
 
@@ -17,14 +19,35 @@ router.get("/getOrders", (req, res, next) => {
 });
 
 router.post("/addOrder", (req, res, next) => {
-   console.log(req.body);
-//    console.log(req.user.id);
 
    const orderData = { ...req.body.orderData };
 
    databaseHandler.addOrder(req.user.id, req.body.ingredients, req.body.price, new Date(), orderData)
-    .then(response => res.sendStatus(200))
-    .catch(err => res.sendStatus(400));
+    .then(response => {
+        const data = {
+            from: "xyz@gmail.com",
+            to: orderData.email,
+            subject: "test",
+            text: `
+                Hi There,
+                You Placed an order of
+                Salad: ${req.body.ingredients.salad}
+                Cheese: ${req.body.ingredients.cheese}
+                Bacon: ${req.body.ingredients.bacon}
+                Meat: ${req.body.ingredients.meat}
+
+                and Your Total Is: ${req.body.price}
+            `
+        };
+
+        mailgun.messages().send(data, function(error, body){
+            res.sendStatus(200);
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.sendStatus(400)
+    });
 
 });
 

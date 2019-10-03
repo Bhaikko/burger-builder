@@ -16,7 +16,7 @@ router.get("/", (req, res, next) => {
 router.post("/signup", (req, res, next) =>{
     bcrypt.hash(req.body.password, 10, function(err, password) {
         databaseHandler.addUser(req.body.email, password)
-            .then(() => res.sendStatus(200))
+            .then((user) => res.status(200).send(user))
             .catch(err => {
                 res.status(400).json({
                     message: "Email Already Exist"

@@ -6,7 +6,8 @@ const addUser = (email, password) => {
     return Users.create({
         email,
         password 
-    });
+    })
+        .then(user => user);
 }
 
 const getUser = (email) => {
