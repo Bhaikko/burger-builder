@@ -72,20 +72,20 @@ class ContactData extends Component {
                 valid: false,
                 touched: false
             },
-            email: {
-                elementType: "input",
-                elementConfig: {
-                    type: "email",
-                    placeholder: "Mail",
-                },
-                value: "",
-                validation: {
-                    required: true,
-                    isEmail: true 
-                },
-                valid: false,
-                touched: false
-            },
+            // email: {
+            //     elementType: "input",
+            //     elementConfig: {
+            //         type: "email",
+            //         placeholder: "Mail",
+            //     },
+            //     value: "",
+            //     validation: {
+            //         required: true,
+            //         isEmail: true 
+            //     },
+            //     valid: false,
+            //     touched: false
+            // },
             deliveryMethod: {
                 elementType: "select",
                 elementConfig: {
@@ -148,8 +148,9 @@ class ContactData extends Component {
             ingredients: this.props.ings,
             price: this.props.price,         //This PRICE SHOULD BE RECALCULATED ON SERVER
             orderData: formData,
-            userId: this.props.userId
+            userId: this.props.userId,
         };
+        order.orderData.email = this.props.userEmail;
 
         this.props.onOrderBurger(order, this.props.token);
 
@@ -245,7 +246,8 @@ const mapStateToProps = (state) => {
         price: state.burgerBuilder.totalPrice,
         loading: state.order.loading,
         token: state.auth.token,
-        userId: state.auth.userId
+        userId: state.auth.userId,
+        userEmail: state.auth.userEmail
     }
 }
 

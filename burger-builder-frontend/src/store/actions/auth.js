@@ -9,18 +9,19 @@ const authStart = () => {
     };
 };
 
-const authSuccess = (token, userId) => {
+const authSuccess = (token, userId, userEmail) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         idToken: token,
-        userId: userId
+        userId: userId,
+        userEmail: userEmail
     };
 };
 
 const authFail = (error) => {
     return {
         type: actionTypes.AUTH_FAIL,
-        error: error 
+        error: error.response.data.message 
     };
 };
 
@@ -48,12 +49,13 @@ export const auth = (email, password, isSignUp) => {
                 // localstorage is browser API for storing data
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userId', response.data.user.userId);
+                localStorage.setItem('email', response.data.user.userEmail);
 
                 const expirationDate = new Date(response.data.user.expirationTime); // To store expire time and date 
-                console.log(expirationDate);
+
                 localStorage.setItem('expirationDate', expirationDate);
 
-                dispatch(authSuccess(response.data.token, response.data.user.userId));
+                dispatch(authSuccess(response.data.token, response.data.user.userId, response.data.user.userEmail));
                 dispatch(authLogout(expirationDate));
             })
             // .catch(error => dispatch(authFail(error.response.data.error)))
@@ -70,10 +72,12 @@ export const logout = () => {
     };
 };
 
+
 // this is logout function for when the token expires on server, clear the tokenId and UserId on frontend too
 export const authLogout = (expirationTime) => {
-    const time = expirationTime.getTime() - (new Date()).getTime();
-    console.log(time);
+
+    const time = (new Date(expirationTime)).getTime() - (new Date()).getTime();
+
     return (dispatch) => {
         setTimeout(() => {
             dispatch(logout());
@@ -99,11 +103,12 @@ export const authCheckState = () => {
             const expirationDate = new Date(localStorage.getItem("expirationDate"));    // can convert string to date format
             if(expirationDate > new Date()) {
                 const userId = localStorage.getItem("userId");
-                dispatch(authSuccess(token, userId));
+                const userEmail = localStorage.getItem("email");
+                dispatch(authSuccess(token, userId, userEmail));
                 dispatch(authLogout((expirationDate.getTime() - new Date().getTime()) / 1000));
             }
             else {
-                dispatch(authSuccess())
+                dispatch(logout())
             }
             
         }

@@ -17,7 +17,11 @@ router.post("/signup", (req, res, next) =>{
     bcrypt.hash(req.body.password, 10, function(err, password) {
         databaseHandler.addUser(req.body.email, password)
             .then(() => res.sendStatus(200))
-            .catch(err => console.log(err));
+            .catch(err => {
+                res.status(400).json({
+                    message: "Email Already Exist"
+                });
+            });
     });
 });
 
@@ -49,6 +53,7 @@ router.post("/login", (req, res, next) => {
             return res.json({
                 user: {
                     userId: user.id,
+                    userEmail: user.email,
                     expirationTime: expirationTime
                 },
                 token

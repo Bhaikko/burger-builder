@@ -3,6 +3,7 @@ import * as actionTypes from './../actions/actionTypes';
 const initialState = {
     token: null,
     userId: null,
+    userEmail: null,
     error: null,
     loading: false,
     authRedirectPath: "/"
@@ -18,12 +19,14 @@ const reducer = (state = initialState, action) => {
             };
 
         case actionTypes.AUTH_SUCCESS:
+
             return {
                 ...state,
                 error: null,
                 loading: false,
                 token: action.idToken,
                 userId: action.userId,
+                userEmail: action.userEmail
 
             };
 
@@ -38,7 +41,8 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 token: null,
-                userId: null
+                userId: null,
+                userEmail: null
             }
 
 

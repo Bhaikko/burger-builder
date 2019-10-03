@@ -17,7 +17,7 @@ router.get("/getOrders", (req, res, next) => {
 });
 
 router.post("/addOrder", (req, res, next) => {
-//    console.log(req.body);
+   console.log(req.body);
 //    console.log(req.user.id);
 
    const orderData = { ...req.body.orderData };
