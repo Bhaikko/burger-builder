@@ -4,9 +4,17 @@ const { databaseParser } = require("./utility");
 
 const getOrders = (userId) => {
     return Orders.findAll({
-        where: userId 
+        where: {
+            userId: userId
+        },
+        attributes: ["id", "date", "price"],
+        include: [{ 
+            model: Ingredients,
+            attributes: ["bacon", "cheese", "meat", "salad"]
+        }] 
     })
         .then(orders => {
+            // console.log(orders);
             if(!orders)
                 return {};
 
@@ -15,15 +23,21 @@ const getOrders = (userId) => {
 
             return databaseParser(orders);
         })
-        .catch(message => message);
+        .catch(message => console.log(message));
 }
 
-const addOrder = (userId, ingredientsObject, price, date) => {
+const addOrder = (userId, ingredientsObject, price, date, orderData) => {
 
     return Orders.create({
         userId,
         price,
-        date
+        date,
+        name: orderData.name,
+        street: orderData.street,
+        zipcode: orderData.zipCode,
+        country: orderData.country,
+        email: orderData.email,
+        method: orderData.deliveryMethod
     })
         .then(order => {
             return Ingredients.create({

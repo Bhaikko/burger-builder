@@ -8,6 +8,7 @@ const { TOKEN_SECRET_KEY } = require("./../credentials");
 
 const router = express.Router();
 
+
 router.get("/", (req, res, next) => {
     res.send("Auth Route Working");
 });
@@ -37,7 +38,9 @@ router.post("/login", (req, res, next) => {
                 res.send(err);
             }
 
-            const expirationTime = Math.floor(Date.now() / 1000) + (60 * 60);
+            const expirationTime = ((new Date()).getTime()) + (60 * 60 * 1000);
+            // const expirationTime = ((new Date()).getTime()) + (2 * 1000); // Test for 2 sec
+        
 
             const token = jwt.sign({ 
                 data: user,

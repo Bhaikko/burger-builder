@@ -41,7 +41,7 @@ class Orders extends Component {
 
             orders = this.props.orders.map(order => <Order 
                 key={order.id}
-                ingredients={order.ingredients}
+                ingredients={order.ingredient}
                 price={order.price} />)
         }
         return (

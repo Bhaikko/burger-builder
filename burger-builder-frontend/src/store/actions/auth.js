@@ -39,18 +39,18 @@ export const auth = (email, password, isSignUp) => {
         let url = "http://127.0.0.1:4000/api/auth/signup";
         if(!isSignUp) {
             // url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC7VVKakL2LIjVFkUMOUmMAD3c7i9I2Ut0";
-            url = "http://127.0.0.1:4000/api/auth/login"
+            url = "http://127.0.0.1:4000/api/auth/login";
         }
 
         axios.post(url, authData)
             .then(response => {
-                console.log(response);
 
                 // localstorage is browser API for storing data
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('userId', response.data.user.userId);
 
-                const expirationDate = new Date(new Date().getTime() + response.data.user.expirationTime); // To store expire time and date 
+                const expirationDate = new Date(response.data.user.expirationTime); // To store expire time and date 
+                console.log(expirationDate);
                 localStorage.setItem('expirationDate', expirationDate);
 
                 dispatch(authSuccess(response.data.token, response.data.user.userId));
@@ -72,10 +72,12 @@ export const logout = () => {
 
 // this is logout function for when the token expires on server, clear the tokenId and UserId on frontend too
 export const authLogout = (expirationTime) => {
+    const time = expirationTime.getTime() - (new Date()).getTime();
+    console.log(time);
     return (dispatch) => {
         setTimeout(() => {
             dispatch(logout());
-        }, expirationTime * 1000);
+        }, time);
     }
 }
 

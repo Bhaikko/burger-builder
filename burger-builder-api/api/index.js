@@ -2,11 +2,12 @@ const express = require("express");
 
 const authRouter = require("./auth").router;
 const ordersRouter = require("./orders").router;
+const passport = require("./../passport").passport;
 
 const router = express.Router();
 
 router.use("/auth", authRouter);
-router.use("/orders", ordersRouter);
+router.use("/orders", passport.authenticate("jwt", { session: false }), ordersRouter);
 
 router.get("/getIngredients", (req, res, next) => {
     const data = {

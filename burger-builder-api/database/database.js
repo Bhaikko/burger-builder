@@ -36,7 +36,47 @@ const Orders = database.define("orders", {
     },
     date: {
         type: Sequelize.DATE
+    },
+    name: {
+        type: Sequelize.STRING,
+        allowNull: {
+            args: false,
+            msg: "Name Required"
+        }
+    },
+    street: {
+        type: Sequelize.STRING,
+        allowNull: {
+            args: false,
+            msg: "Street Required"
+        }
+    },
+    zipcode: {
+        type: Sequelize.STRING, 
+        allowNull: {
+            args: false,
+            msg: "Zipcode Required"
+        }
+    },
+    email: {
+        type: Sequelize.STRING, 
+        allowNull: {
+            args: false,
+            msg: "Email Required"
+        }
+    },
+    country: {
+        type: Sequelize.STRING, 
+        allowNull: {
+            args: false,
+            msg: "Country Required"
+        }
+    },
+    method: {
+        type: Sequelize.STRING,
+        defaultValue: "Fastest"
     }
+
 });
 
 const Ingredients = database.define("ingredients", {
@@ -44,7 +84,7 @@ const Ingredients = database.define("ingredients", {
         type: Sequelize.INTEGER,
         defaultValue: 0
     },
-    chesse: {
+    cheese: {
         type: Sequelize.INTEGER,
         defaultValue: 0
     },
