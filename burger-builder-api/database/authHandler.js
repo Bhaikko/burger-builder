@@ -7,14 +7,16 @@ const addUser = (email, password) => {
         email,
         password 
     })
-        .then(user => user);
+        .then(user => user)
+        .catch(err => err);
 }
 
 const getUser = (email) => {
     return Users.findOne({
         email 
     })
-        .then(user => user);
+        .then(user => user)
+        .catch(err => err);
 }
 
 module.exports = {

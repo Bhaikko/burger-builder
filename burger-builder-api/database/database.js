@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 
-const { DATABASE_USERNAME, DATABASE_PASSWORD } = require("../credentials");
+const { DATABASE_USERNAME, DATABASE_PASSWORD } = require("../environments");
 
 const database = new Sequelize("burgerBuilder", DATABASE_USERNAME, DATABASE_PASSWORD, {
     host: "localhost",

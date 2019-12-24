@@ -2,7 +2,7 @@ const express = require("express");
 
 
 const databaseHandler = require("./../database/index");
-const { MAILGUN_API_KEY, DOMAIN } = require("./../credentials");
+const { MAILGUN_API_KEY, DOMAIN } = require("./../environments");
 const mailgun = require("mailgun-js")({ apiKey: MAILGUN_API_KEY, domain: DOMAIN }); // This uses authorized recipients method of mailgun
 
 const router = express.Router();

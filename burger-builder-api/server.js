@@ -5,7 +5,7 @@ const cors = require("cors");
 const { database } = require("./database/database");
 const router = require("./api/index").router;
 const { passport } = require("./passport");
-const { COOKIE_SECRET_KEY } = require("./credentials");
+const { COOKIE_SECRET_KEY } = require("./environments");
 
 const app = express();
 

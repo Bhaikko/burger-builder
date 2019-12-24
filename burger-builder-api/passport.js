@@ -6,8 +6,7 @@ const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt; 
 const { Users } = require("./database/database");
-const { TOKEN_SECRET_KEY } = require("./credentials");
-
+const { TOKEN_SECRET_KEY } = require("./environments");
 
 // This is responsible for the initial login on the web app 
 passport.use("user", new LocalStrategy({ usernameField: "email", passwordField: "password" }, (username, password, done) => {
@@ -41,19 +40,6 @@ passport.use("jwt", new JWTStrategy({
             .then(user => done(null, user))
             .catch(err => done(err));
 }));
-
-
-// passport.serializeUser((user, done) => done(null, user.id));
-
-// passport.deserializeUser((userId, done) => {
-//     Users.findOne({
-//         where: {
-//             id: userId 
-//         }
-//     })
-//         .then(user => done(null, user))
-//         .catch(err => console.log(err));
-// });
 
 module.exports = {
     passport 
